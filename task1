@@ -1,0 +1,40 @@
+import os
+import subprocess
+import requests
+
+def is_airflow_running(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return True
+        else:
+            return False
+    except requests.RequestException:
+        return False
+
+url = "http://10.189.87.567:4356/"
+
+if is_airflow_running(url):
+    print(url)
+    print("URL is up and running")
+else:
+    print("The URL is not up and running")
+
+# Check if current directory is /data/dars/
+if os.getcwd() == '/data/dars/':
+    # Execute command1
+    command1 = "airflow db init"
+    subprocess.run(command1.split(), cwd='/data/dars/')
+else:
+    print("Current directory is not /data/dars/. Changing directory and executing command1.")
+    try:
+        os.chdir('/data/dars/')  # Change directory to /data/dars/
+        # Check if the directory has changed successfully
+        if os.getcwd() == '/data/dars/':
+            print("Changed to /data/dars/ successfully.")
+            command1 = "airflow db init"
+            subprocess.run(command1.split(), cwd='/data/dars/')
+        else:
+            print("Failed to change to /data/dars/.")
+    except FileNotFoundError:
+        print("Directory /data/dars/ not found. Cannot execute command1.")
